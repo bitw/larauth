@@ -348,6 +348,26 @@ class LarauthController extends \BaseController
      */
     public function getNewPassword($email, $key)
     {
+        $view = View::make(Config::get('Larauth::views.new_password'));
+
+        if(Session::get('processed'))
+        {
+            return $view
+                ->with([
+                    'errors'    => false,
+                    'email'     => $email,
+                    'key'       => $key
+                ]);
+        }
+
+        if(Session::get('errors'))
+            return $view
+                ->with([
+                    'errors'    => Session::get('errors'),
+                    'email'     => $email,
+                    'key'       => $key
+                ]);
+
         $valid = Validator::make(
             [
                 'email' => $email,
@@ -364,8 +384,6 @@ class LarauthController extends \BaseController
 
         if(!$user->checkResetPasswordCode($key))
             return Redirect::route('larauth.forgot_password');
-
-        $view = View::make(Config::get('Larauth::views.new_password'));
 
         return $view
             ->with([
@@ -391,6 +409,11 @@ class LarauthController extends \BaseController
             ]
         );
 
+        if($valid->fails())
+        {
+            return Redirect::route('larauth.new_password', ['email'=>$email, 'key'=>$key])->with('errors', $valid->errors());
+        }
+
         $valid = Validator::make(
             [
                 'password' => Input::get('password'),
@@ -414,12 +437,15 @@ class LarauthController extends \BaseController
 
         if($valid->fails())
         {
-            return Redirect::route('larauth.new_password', ['email'=>$email, 'key'=>$key]);
+            return Redirect::route('larauth.new_password', ['email'=>$email, 'key'=>$key])->with('errors', $valid->errors());
         }
 
         $user = Sentry::findUserByCredentials(['email'=>$email]);
 
-        var_dump($user->getResetPasswordCode());
+        if($user->attemptResetPassword($key, Input::get('password')))
+        {
+            return Redirect::route('larauth.new_password')->with('processed', true);
+        }
     }
 
     /**
