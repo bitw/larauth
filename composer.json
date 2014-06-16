@@ -1,6 +1,7 @@
 {
     "name": "bitw/larauth",
     "description": "",
+    "license": "MIT",
     "authors": [
         {
             "name": "bitw",
