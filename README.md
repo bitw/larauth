@@ -9,12 +9,12 @@ larauth
 - Восстановление пароля
 
 ##Установка
-Выполняем `composer require bitw/larauth:dev-master`\r\n
-Импортируем конфигурацию `php artisan config:publish bitw/larauth`\r\n
-Импортируем шаблоны `php artisan view:publish bitw/larauth`\r\n
+Выполняем `composer require bitw/larauth:dev-master`
+Импортируем конфигурацию `php artisan config:publish bitw/larauth`
+Импортируем шаблоны `php artisan view:publish bitw/larauth`
 
 ###Параметры конфигурации
 Для защиты от "лишних" регистаций можно подключить и сконфигурировать [Recaptcha](http://www.google.com/recaptcha/intro/index.html) и включить его в конфиге `'captcha_protect' => true`
-Параметр `'generate_password' => true` автоматически сгенерирует пароль и скрывает при регистрации поля ввода пароля и подтверждения
+Параметр `'generate_password' => true` автоматически сгенерирует пароль и скрывает при регистрации поля ввода пароля и подтверждения.
 За включение/отключение необходимости активации учетной записи после регистрации отвечает параметр `'require_activation' => true`.
 Так же можно установить проверки минимальной длинны пароля `min_password' => 6`
