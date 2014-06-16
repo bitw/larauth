@@ -8,8 +8,8 @@
 
 return array(
 
-	'template'  => 'default',
-	'out'       => 'content',
+    'template'  => 'default',
+    'out'       => 'content',
 
     'views'     => [
         'registration' => 'Larauth::larauth/registration',
@@ -23,12 +23,11 @@ return array(
         'new_password' => 'Larauth::larauth/new_password',
     ],
 
-	'registration' => array(
-		'captcha_protect' => false,
-		'generate_password' => true,
-		'require_activation' => true,
-		'min_password' => 6,
-	),
-
+    'registration' => array(
+        'captcha_protect' => false,
+        'generate_password' => true,
+        'require_activation' => true,
+        'min_password' => 6,
+    ),
 
 );
