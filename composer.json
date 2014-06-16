@@ -9,7 +9,9 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "4.2.*"
+        "illuminate/support": "4.2.*",
+        "cartalyst/sentry": "2.1.*",
+        "greggilbert/recaptcha": "dev-master"
     },
     "autoload": {
         "psr-0": {
