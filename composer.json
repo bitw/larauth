@@ -1,6 +1,5 @@
 {
     "name": "bitw/larauth",
-    "version": "1.0.0",
     "description": "",
     "license": "MIT",
     "authors": [
@@ -18,6 +17,11 @@
     "autoload": {
         "psr-0": {
             "Bitw\\Larauth": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
         }
     },
     "minimum-stability": "stable"
