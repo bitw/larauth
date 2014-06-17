@@ -24,9 +24,6 @@
         "frameworks": ["Laravel 4"],
         "versions": {
             "1": "master"
-        },
-        "branch-alias": {
-            "dev-master": "1.1-dev"
         }
     },
     "minimum-stability": "stable"
