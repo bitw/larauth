@@ -3,11 +3,6 @@
 class LarauthController extends \BaseController
 {
 
-    public function __construct()
-    {
-        \Debugbar::disable();
-    }
-
     /**
      * Display authorization form
      */
@@ -463,6 +458,8 @@ class LarauthController extends \BaseController
      */
     public function getLogout()
     {
+        Sentry::logout();
 
+        return Redirect::to('/');
     }
 }
