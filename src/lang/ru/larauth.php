@@ -43,6 +43,7 @@ return array(
     'process_key_incorrect' => 'Неверный или устаревший ключ операции. :repeat_recovery_password',
     'repeat_recovery_password' => 'Повторить прецедуру восстановления пароля?',
     'save_password' => 'Сохранить пароль',
+    'change_password' => 'Смена пароля',
     'password_change_success' => 'Пароль успешно изменен.',
     'wrong_password' => 'Неверный пароль',
     'user_suspended' => 'Учетная запись временно заблокирована',

@@ -396,7 +396,7 @@ class LarauthController extends \BaseController
 
         return $view
             ->with([
-                'errors'    => $valid->errors(),
+                'errors'    => $valid->errors()->count() ? $valid->errors() : false,
                 'email'     => $email,
                 'key'       => $key
             ]);

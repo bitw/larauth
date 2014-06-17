@@ -11,6 +11,10 @@ larauth
 ##Установка
 Выполняем `composer require bitw/larauth:dev-master`
 
+Подключаем /app/config/app.php    ```'providers' => array(
+...```    добавить `'Bitw\Larauth\LarauthServiceProvider',`
+
+
 Импортируем конфигурацию `php artisan config:publish bitw/larauth`
 
 Импортируем шаблоны `php artisan view:publish bitw/larauth`
