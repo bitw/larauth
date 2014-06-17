@@ -1,5 +1,6 @@
 {
     "name": "bitw/larauth",
+    "version": "1.0.0",
     "description": "",
     "license": "MIT",
     "authors": [
@@ -19,6 +20,5 @@
             "Bitw\\Larauth": "src/"
         }
     },
-    "version": "1.0",
     "minimum-stability": "stable"
 }
