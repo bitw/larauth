@@ -9,7 +9,7 @@ larauth
 - Восстановление пароля
 
 ##Установка
-Выполняем `composer require bitw/larauth:dev-master`
+Выполняем `composer require bitw/larauth:1.0.*@dev`
 
 Подключаем /app/config/app.php    ```'providers' => array(
 ...```    добавить `'Bitw\Larauth\LarauthServiceProvider',`
