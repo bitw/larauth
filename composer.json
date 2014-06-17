@@ -19,12 +19,6 @@
             "Bitw\\Larauth": "src/"
         }
     },
-    "extra": {
-        "component": "package",
-        "frameworks": ["Laravel 4"],
-        "versions": {
-            "1": "master"
-        }
-    },
+    "version": "1.0",
     "minimum-stability": "stable"
 }
