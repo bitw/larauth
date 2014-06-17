@@ -14,12 +14,13 @@ return array(
 	'password' => 'Пароль',
 	'confirm_password' => 'Подтвердить пароль',
 	'remember' => 'Запомнить',
-	'forgot_password' => 'Забыли пароль',
+	'forgot_password' => 'Забыли пароль?',
 	'password_recovery' => 'Восстановление пароля',
     'activation' => 'Активация',
     'activation_code' => 'Код активации',
     'activate' => 'Активировать',
     'request' => 'Запросить',
+    'recovery' => 'Восстановить',
 
     'email_required' => 'Не указан адрес эл.почты',
 	'new_password_sent_to_email' => 'Новый пароль выслан на эл.почту',
@@ -42,5 +43,7 @@ return array(
     'process_key_incorrect' => 'Неверный или устаревший ключ операции. :repeat_recovery_password',
     'repeat_recovery_password' => 'Повторить прецедуру восстановления пароля?',
     'save_password' => 'Сохранить пароль',
-    'password_change_success' => 'Пароль успешно изменен.'
+    'password_change_success' => 'Пароль успешно изменен.',
+    'wrong_password' => 'Неверный пароль',
+    'user_suspended' => 'Учетная запись временно заблокирована',
 );

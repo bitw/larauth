@@ -22,10 +22,13 @@ class LarauthController extends \BaseController
     {
         $valid = Validator::make(
             Input::all(),
-            array(
+            [
                 'email' => 'required|email',
                 'password' => 'required'
-            )
+            ],
+            [
+                'password.required' => trans('Larauth::larauth.password_required'),
+            ]
         );
 
         if ($valid->fails()) {
@@ -53,7 +56,8 @@ class LarauthController extends \BaseController
         }
         catch (Cartalyst\Sentry\Users\WrongPasswordException $e)
         {
-            echo 'Wrong password, try again.';
+            //echo 'Wrong password, try again.';
+            $valid->errors()->add('password', trans('Larauth::larauth.wrong_password'));
         }
         catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
         {
@@ -67,12 +71,17 @@ class LarauthController extends \BaseController
         // The following is only required if the throttling is enabled
         catch (Cartalyst\Sentry\Throttling\UserSuspendedException $e)
         {
-            echo 'User is suspended.';
+            //echo 'User is suspended.';
+            $valid->errors()->add('password', trans('Larauth::larauth.user_suspended'));
         }
         catch (Cartalyst\Sentry\Throttling\UserBannedException $e)
         {
             echo 'User is banned.';
         }
+
+        return Redirect::route('larauth.logon')
+            ->with('errors', $valid->errors())
+            ->with(Input::all());
     }
 
 

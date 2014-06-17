@@ -1,25 +1,34 @@
 @extends(Config::get('Larauth::template'))
 
 @section(Config::get('Larauth::out'))
-	<h2><?=\Patchwork\Utf8::ucfirst(trans('Larauth::larauth.password_recovery'))?></h2>
-	@if(!$processed)
-		{{Form::open(['route'=>'larauth.forgot_password'])}}
-			<ul>
-				<li>
-					<label for="email"><?=\Patchwork\Utf8::ucfirst(trans('Larauth::larauth.email'))?></label>
-					<?=Form::email('email', Session::get('email'))?>
-				</li>
-			</ul>
-			<?=Form::submit()?>
-			{{link_to_route('larauth.logon', \Patchwork\Utf8::ucfirst(trans('Larauth::larauth.authorization')))}}
-			{{link_to_route('larauth.registration', \Patchwork\Utf8::ucfirst(trans('Larauth::larauth.registration')))}}
-		{{Form::close()}}
-	@else
-		<?=\Patchwork\Utf8::ucfirst(trans('Larauth::larauth.instruction_change_password_sended'))?>
-	@endif
-	@if($errors)
-		<div class="alert">
-			<ul>{{implode('', $errors->all('<li>:message</li>'))}}</ul>
-		</div>
-	@endif
+<div class="col-md-offset-4 col-md-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">{{trans('Larauth::Larauth.password_recovery')}}</div>
+        <div class="panel-body">
+            @if(!$processed)
+                {{Form::open(['route'=>'larauth.forgot_password', 'role'=>'form', 'class'=>'form-horizontal'])}}
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="email">{{trans('Larauth::larauth.email')}}</label>
+                        <div class="col-md-8">
+                            {{Form::email('email', Session::get('email'), ['class'=>'form-control'])}}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <?=Form::submit(trans('Larauth::larauth.recovery'), ['class'=>'btn btn-primary col-md-12'])?>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        {{link_to_route('larauth.logon', trans('Larauth::larauth.authorization'), [], ['class'=>'btn btn-link'])}}
+                        {{link_to_route('larauth.registration', trans('Larauth::larauth.registration'), [], ['class'=>'btn btn-link'])}}
+                    </div>
+                {{Form::close()}}
+            @else
+                <?=trans('Larauth::larauth.instruction_change_password_sended')?>
+            @endif
+            @if($errors)
+                <div class="alert">
+                    <ul>{{implode('', $errors->all('<li>:message</li>'))}}</ul>
+                </div>
+            @endif
+        </div>
+    </div>
 @endsection
