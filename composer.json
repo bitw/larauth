@@ -15,6 +15,9 @@
         "greggilbert/recaptcha": "dev-master"
     },
     "autoload": {
+        "classmap":[
+            "src/controllers"
+        ],
         "psr-0": {
             "Bitw\\Larauth": "src/"
         }
