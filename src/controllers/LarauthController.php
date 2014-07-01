@@ -39,7 +39,11 @@ class LarauthController extends \BaseController
                 'password' => Input::get('password'),
             ], Input::get('remember'));
 
+<<<<<<< HEAD
             return Redirect::intended();
+=======
+            return Redirect::back();
+>>>>>>> 434798501e1cf3248919a5cc27a26ad750d705b7
         }
         catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
         {
