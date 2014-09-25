@@ -16,7 +16,11 @@
     },
     "autoload": {
 <<<<<<< HEAD
+<<<<<<< HEAD
         "classmap": [
+=======
+        "classmap":[
+>>>>>>> FETCH_HEAD
 =======
         "classmap":[
 >>>>>>> FETCH_HEAD
