@@ -13,7 +13,7 @@ class LarauthServiceProvider extends ServiceProvider {
 
     public function boot()
     {
-        $this->package('Bitw/Larauth');
+        $this->package('bitw/larauth');
 
         include __DIR__ . '/../../routes.php';
     }

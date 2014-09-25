@@ -8,7 +8,7 @@ class LarauthController extends \BaseController
      */
     public function getLogon()
     {
-        return View::make(Config::get('Larauth::views.logon'))
+        return View::make(Config::get('larauth::views.logon'))
             ->with('errors', Session::get('errors'));
     }
 
@@ -22,7 +22,7 @@ class LarauthController extends \BaseController
                 'password' => 'required'
             ],
             [
-                'password.required' => trans('Larauth::larauth.password_required'),
+                'password.required' => trans('larauth::larauth.password_required'),
             ]
         );
 
@@ -39,7 +39,8 @@ class LarauthController extends \BaseController
                 'password' => Input::get('password'),
             ], Input::get('remember'));
 
-            return Redirect::to('/');
+            // redirect to url before authetificate
+            return Redirect::intended();
         }
         catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
         {
@@ -52,7 +53,7 @@ class LarauthController extends \BaseController
         catch (Cartalyst\Sentry\Users\WrongPasswordException $e)
         {
             //echo 'Wrong password, try again.';
-            $valid->errors()->add('password', trans('Larauth::larauth.wrong_password'));
+            $valid->errors()->add('password', trans('larauth::larauth.wrong_password'));
         }
         catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
         {
@@ -67,7 +68,7 @@ class LarauthController extends \BaseController
         catch (Cartalyst\Sentry\Throttling\UserSuspendedException $e)
         {
             //echo 'User is suspended.';
-            $valid->errors()->add('password', trans('Larauth::larauth.user_suspended'));
+            $valid->errors()->add('password', trans('larauth::larauth.user_suspended'));
         }
         catch (Cartalyst\Sentry\Throttling\UserBannedException $e)
         {
@@ -85,7 +86,7 @@ class LarauthController extends \BaseController
      */
     public function getRegistration()
     {
-        return View::make(Config::get('Larauth::views.registration'))
+        return View::make(Config::get('larauth::views.registration'))
             ->with('errors', Session::get('errors'));
     }
 
@@ -93,17 +94,17 @@ class LarauthController extends \BaseController
     {
         $rules['email'] = 'required|email|unique:users,email';
 
-        if (Config::get('Larauth::registration.captcha_protect'))
+        if (Config::get('larauth::registration.captcha_protect'))
             $rules['recaptcha_response_field'] = 'required|recaptcha';
 
-        if (!Config::get('Larauth::registration.generate_password'))
-            $rules['password'] = 'required|min:' . Config::get('Larauth::registration.min_password') . '|confirmed';
+        if (!Config::get('larauth::registration.generate_password'))
+            $rules['password'] = 'required|min:' . Config::get('larauth::registration.min_password') . '|confirmed';
 
         $messages = [
-            'email.unique' => Lang::get('Larauth::larauth.email_already_registered', ['email' => Input::get('email')]),
-            'password.required' => Lang::get('Larauth::larauth.password_required'),
-            'password.min' => Lang::get('Larauth::larauth.password_min', ['min' => Config::get('Larauth::registration.min_password')]),
-            'password.confirmed' => Lang::get('Larauth::larauth.password_confirmed'),
+            'email.unique' => Lang::get('larauth::larauth.email_already_registered', ['email' => Input::get('email')]),
+            'password.required' => Lang::get('larauth::larauth.password_required'),
+            'password.min' => Lang::get('larauth::larauth.password_min', ['min' => Config::get('larauth::registration.min_password')]),
+            'password.confirmed' => Lang::get('larauth::larauth.password_confirmed'),
         ];
 
         $valid = Validator::make(
@@ -117,12 +118,12 @@ class LarauthController extends \BaseController
                 ->with('errors', $valid->errors())
                 ->with(Input::all());
 
-        if (Config::get('Larauth::registration.generate_password'))
+        if (Config::get('larauth::registration.generate_password'))
             $password = str_random(8);
         else
             $password = Input::get('password');
 
-        if (Config::get('Larauth::registration.require_activation')) {
+        if (Config::get('larauth::registration.require_activation')) {
             // если активация обязательна
             // формируем и высылаем письмо с инструкцией по активации
             $user = Sentry::register(array(
@@ -141,12 +142,12 @@ class LarauthController extends \BaseController
             Cache::put(md5(Input::get('email')), $password, 60*24);
 
             Mail::send(
-                Config::get('Larauth::views.mail_activation'),
+                Config::get('larauth::views.mail_activation'),
                 $data,
                 function ($message) use ($data) {
                     $message
                         ->to($data['email'])
-                        ->subject(trans('Larauth::larauth.activation'));
+                        ->subject(trans('larauth::larauth.activation'));
                 }
             );
 
@@ -167,12 +168,12 @@ class LarauthController extends \BaseController
 
             // Высылаем письмо с сообщением об успешной регистрации
             Mail::send(
-                Config::get('Larauth::views.mail_registration'),
+                Config::get('larauth::views.mail_registration'),
                 $data,
                 function ($message) use ($data) {
                     $message
                         ->to($data['email'])
-                        ->subject(trans('Larauth::larauth.registration_success'));
+                        ->subject(trans('larauth::larauth.registration_success'));
                 }
             );
         }
@@ -190,7 +191,7 @@ class LarauthController extends \BaseController
     public function getActivation($code = null)
     {
         if (Session::get('activated')) {
-            return View::make(Config::get('Larauth::views.activation'));
+            return View::make(Config::get('larauth::views.activation'));
         }
 
         if (Input::get('code')) {
@@ -210,12 +211,12 @@ class LarauthController extends \BaseController
 
                 // Высылаем письмо с сообщением об успешной регистрации
                 Mail::send(
-                    Config::get('Larauth::views.mail_registration'),
+                    Config::get('larauth::views.mail_registration'),
                     $data,
                     function ($message) use ($data) {
                         $message
                             ->to($data['email'])
-                            ->subject(trans('Larauth::larauth.registration_success'));
+                            ->subject(trans('larauth::larauth.registration_success'));
                     }
                 );
 
@@ -223,12 +224,12 @@ class LarauthController extends \BaseController
                     ->with('activated', TRUE);
             } catch (Cartalyst\Sentry\Users\UserNotFoundException $e) {
                 return Redirect::route('larauth.activation')
-                    ->with('error', trans('Larauth::larauth.wrong_activation_code'));
+                    ->with('error', trans('larauth::larauth.wrong_activation_code'));
             }
         }
 
         return View::make(
-            Config::get('Larauth::views.activation'),
+            Config::get('larauth::views.activation'),
             [
                 'error' => Session::get('error'),
                 'code' => $code
@@ -244,7 +245,7 @@ class LarauthController extends \BaseController
      */
     public function getRequestCode()
     {
-        return View::make(Config::get('Larauth::views.request_code'))
+        return View::make(Config::get('larauth::views.request_code'))
             ->with('error', Session::get('error'));
     }
 
@@ -261,8 +262,8 @@ class LarauthController extends \BaseController
         ];
 
         $messages = [
-            'email.required' => trans('Larauth::larauth.email_required'),
-            'exists' => trans('Larauth::larauth.user_acivated_or_not_registered'),
+            'email.required' => trans('larauth::larauth.email_required'),
+            'exists' => trans('larauth::larauth.user_acivated_or_not_registered'),
         ];
 
         $valid = Validator::make(
@@ -284,7 +285,7 @@ class LarauthController extends \BaseController
         );
 
         Mail::send(
-            Config::get('Larauth::views.mail_activation'),
+            Config::get('larauth::views.mail_activation'),
             $data,
             function ($message) use ($data) {
                 $message->to($data['email']);
@@ -301,7 +302,7 @@ class LarauthController extends \BaseController
      */
     public function getForgotPassword()
     {
-        return View::make(Config::get('Larauth::views.forgot'))
+        return View::make(Config::get('larauth::views.forgot'))
             ->with('errors', Session::get('errors'))
             ->with('processed', Session::get('processed'));
     }
@@ -319,7 +320,7 @@ class LarauthController extends \BaseController
                 'email' => 'required|email|exists:users'
             ),
             array(
-                'exists' => \Patchwork\Utf8::ucfirst(trans('Larauth::larauth.account_with_email_not_exist')),
+                'exists' => \Patchwork\Utf8::ucfirst(trans('larauth::larauth.account_with_email_not_exist')),
             )
         );
         if (!$valid->passes()) {
@@ -335,12 +336,12 @@ class LarauthController extends \BaseController
         $data = ['key' => $key, 'email'=>Input::get('email')];
 
         Mail::send(
-            Config::get('Larauth::views.mail_forgotpassword'),
+            Config::get('larauth::views.mail_forgotpassword'),
             $data,
             function($message) use ($data){
                 $message
                     ->to($data['email'])
-                    ->subject(trans('Larauth::larauth.password_recovery'));
+                    ->subject(trans('larauth::larauth.password_recovery'));
             }
         );
 
@@ -352,7 +353,7 @@ class LarauthController extends \BaseController
      */
     public function getNewPassword($email, $key)
     {
-        $view = View::make(Config::get('Larauth::views.new_password'));
+        $view = View::make(Config::get('larauth::views.new_password'));
 
         if(Session::get('processed'))
         {
@@ -424,18 +425,18 @@ class LarauthController extends \BaseController
                 'password_confirmation' => Input::get('password_confirmation'),
             ],
             [
-                'password' => 'required|confirmed|min:'.Config::get('Larauth::registration.min_password'),
+                'password' => 'required|confirmed|min:'.Config::get('larauth::registration.min_password'),
             ],
             [
-                'key.required' => trans('Larauth::larauth,process_key_required'),
+                'key.required' => trans('larauth::larauth,process_key_required'),
                 /*
-                'key.exists'=> trans('Larauth::larauth.process_key_incorrect',
-                    ['repeat_recovery_password'=>link_to_route('larauth.forgot_password', trans('Larauth::larauth.repeat_recovery_password'))]
+                'key.exists'=> trans('larauth::larauth.process_key_incorrect',
+                    ['repeat_recovery_password'=>link_to_route('larauth.forgot_password', trans('larauth::larauth.repeat_recovery_password'))]
                 ),
                 */
-                'password.required' => trans('Larauth::larauth.password_required'),
-                'password.confirmed' => trans('Larauth::larauth.password_confirmed'),
-                'password.min' => trans('Larauth::larauth.password_min', ['min'=>Config::get('Larauth::registration.min_password')])
+                'password.required' => trans('larauth::larauth.password_required'),
+                'password.confirmed' => trans('larauth::larauth.password_confirmed'),
+                'password.min' => trans('larauth::larauth.password_min', ['min'=>Config::get('larauth::registration.min_password')])
             ]
         );
 

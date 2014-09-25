@@ -12,15 +12,15 @@ return array(
     'out'       => 'content',
 
     'views'     => [
-        'registration' => 'Larauth::larauth/registration',
-        'activation' => 'Larauth::larauth/activation',
-        'request_code' => 'Larauth::larauth/request_code',
-        'mail_activation' => 'Larauth::larauth/mail_activation',
-        'mail_registration' => 'Larauth::larauth/mail_registration',
-        'logon' => 'Larauth::larauth/logon',
-        'forgot' =>  'Larauth::larauth/forgot',
-        'mail_forgotpassword' => 'Larauth::larauth/mail_forgotpassword',
-        'new_password' => 'Larauth::larauth/new_password',
+        'registration' => 'larauth::larauth/registration',
+        'activation' => 'larauth::larauth/activation',
+        'request_code' => 'larauth::larauth/request_code',
+        'mail_activation' => 'larauth::larauth/mail_activation',
+        'mail_registration' => 'larauth::larauth/mail_registration',
+        'logon' => 'larauth::larauth/logon',
+        'forgot' =>  'larauth::larauth/forgot',
+        'mail_forgotpassword' => 'larauth::larauth/mail_forgotpassword',
+        'new_password' => 'larauth::larauth/new_password',
     ],
 
     'registration' => array(
