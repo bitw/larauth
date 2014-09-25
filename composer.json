@@ -15,15 +15,7 @@
         "greggilbert/recaptcha": "dev-master"
     },
     "autoload": {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "classmap": [
-=======
         "classmap":[
->>>>>>> FETCH_HEAD
-=======
-        "classmap":[
->>>>>>> FETCH_HEAD
             "src/controllers"
         ],
         "psr-0": {
