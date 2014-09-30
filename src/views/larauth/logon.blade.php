@@ -33,7 +33,7 @@
                         </div>
                     @endif
                     <div class="col-md-12">
-                        {{Form::submit(trans('larauth::larauth.sign_in'), ['class'=>'btn btn-primary col-md-12'])}}
+                        {{Form::submit(trans('larauth::larauth.sign_in'), ['class'=>'btn btn-primary col-md-12', 'onclick'=>'this.disabled=true;this.form.submit();'])}}
                     </div>
                     <div class="col-md-12 text-center">
                         {{link_to_route('larauth.registration', trans('larauth::larauth.registration'), [], ['class'=>'btn btn-link'])}}

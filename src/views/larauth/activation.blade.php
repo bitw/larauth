@@ -6,9 +6,9 @@
             <div class="panel-heading">{{trans('larauth::larauth.activation')}}</div>
             <div class="panel-body">
                 @if(!Session::get('activated'))
-                    {{Form::open(['route'=>'larauth.activation', 'method'=>'post', 'role'=>'form', 'class'=>'form-horizontal'])}}
+                    {{ Form::open(['route'=>'larauth.activation', 'method'=>'post', 'role'=>'form', 'class'=>'form-horizontal']) }}
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="email">{{trans('larauth::larauth.activation_code')}}</label>
+                            <label class="col-md-4 control-label" for="email">{{ trans('larauth::larauth.activation_code') }}</label>
                             <div class="col-md-8">
                                 {{Form::text('code', false, ['required'=>true, 'class'=>'form-control'])}}
                             </div>
@@ -16,7 +16,7 @@
                         @if($error)
                             <div class="alert error">{{$error}}</div>
                         @endif
-                        {{Form::submit(trans('larauth::larauth.activate'), ['class'=>'btn btn-primary pull-right'])}}
+                        {{Form::submit(trans('larauth::larauth.activate'), ['class'=>'btn btn-primary pull-right', 'on-click'=>'this.disabled=true;this.form.submit();'])}}
                     {{Form::close()}}
                     <div class="col-md-12 text-center">
                         {{link_to_route('larauth.requestcode', trans('larauth::larauth.request_activation_code'), [], ['class'=>'btn btn-link'])}}

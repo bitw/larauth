@@ -141,15 +141,19 @@ class LarauthController extends \BaseController
             //Запоминаем пароль в хеше на сутки
             Cache::put(md5(Input::get('email')), $password, 60*24);
 
-            Mail::send(
-                Config::get('larauth::views.mail_activation'),
-                $data,
-                function ($message) use ($data) {
-                    $message
-                        ->to($data['email'])
-                        ->subject(trans('larauth::larauth.activation'));
-                }
-            );
+	        Queue::push(function($job) use($data){
+		        Mail::send(
+			        Config::get('larauth::views.mail_activation'),
+			        $data,
+			        function ($message) use ($data) {
+				        $message
+					        ->to($data['email'])
+					        ->subject(trans('larauth::larauth.activation'));
+			        }
+		        );
+
+				$job->delete();
+	        });
 
             return Redirect::route('larauth.activation');
 

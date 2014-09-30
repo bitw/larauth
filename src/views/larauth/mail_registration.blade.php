@@ -4,12 +4,12 @@
     <title></title>
 </head>
 <body>
-    <h2>Поздавляем!</h2>
-    <p>Регистрация завершена.</p>
+    <h2>{{ trans('larauth::larauth.congratulations') }}</h2>
+    <p>{{ trans('larauth::larauth.registration_completed') }}</p>
     <p>
-        Данные для входа:<br/>
-        {{trans('email')}}: {{$email}}<br/>
-        {{trans('password')}}: {{$password}}
+        {{ trans('larauth::larauth.authorization_data') }}:<br/>
+        {{ trans('email') }}: {{ $email }}<br/>
+        {{ trans('password') }}: {{ $password }}
     </p>
 </body>
 </html>

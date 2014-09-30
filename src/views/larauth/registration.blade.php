@@ -44,6 +44,7 @@
                     <div class="col-md-12 text-center">
                         {{link_to_route('larauth.logon', trans('larauth::larauth.authorization'), [], ['class'=>'btn btn-link'])}}
                         {{link_to_route('larauth.forgot_password', trans('larauth::larauth.forgot_password'), [], ['class'=>'btn btn-link'])}}
+                        {{link_to_route('larauth.activation', trans('larauth::larauth.activation'), [], ['class'=>'btn btn-link'])}}
                     </div>
                 {{Form::close()}}
             </div>

@@ -6,8 +6,8 @@
 <body>
 <h2>{{trans('larauth::larauth.password_recovery')}}</h2>
 <p>
-    Для создания нового пароля перейдите по ссылке:<br/>
-    {{route('larauth.new_password', ['email'=>$email, 'key'=>$key])}}
+    {{ trans('larauth::larauth.click_for_create_new_password') }}:
+    {{ link_to_route(route('larauth.new_password', ['email'=>$email, 'key'=>$key]), route('larauth.new_password', ['email'=>$email, 'key'=>$key])) }}
 </p>
 </body>
 </html>
