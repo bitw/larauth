@@ -134,7 +134,11 @@ class LarauthController extends \BaseController
             $activationCode = $user->getActivationCode();
 
             $data = array_merge(
-                ['code' => $activationCode, 'password' => $password],
+                [
+	                'code' => $activationCode,
+	                'email' => Input::get('email'),
+	                'password' => $password,
+                ],
                 Input::all()
             );
 
@@ -170,16 +174,19 @@ class LarauthController extends \BaseController
                 'password' => $password
             ];
 
-            // Высылаем письмо с сообщением об успешной регистрации
-            Mail::send(
-                Config::get('larauth::views.mail_registration'),
-                $data,
-                function ($message) use ($data) {
-                    $message
-                        ->to($data['email'])
-                        ->subject(trans('larauth::larauth.registration_success'));
-                }
-            );
+            // Ставим в очередь на отправку письмо с сообщением об успешной регистрации
+	        Queue::push(function($job) use($data) {
+		        Mail::send(
+			        Config::get('larauth::views.mail_registration'),
+			        $data,
+			        function ($message) use ($data) {
+				        $message
+					        ->to($data['email'])
+					        ->subject(trans('larauth::larauth.registration_success'));
+			        }
+		        );
+		        $job->delete();
+	        });
         }
 
         if ($valid->errors()->count()) {
@@ -214,15 +221,18 @@ class LarauthController extends \BaseController
                 ];
 
                 // Высылаем письмо с сообщением об успешной регистрации
-                Mail::send(
-                    Config::get('larauth::views.mail_registration'),
-                    $data,
-                    function ($message) use ($data) {
-                        $message
-                            ->to($data['email'])
-                            ->subject(trans('larauth::larauth.registration_success'));
-                    }
-                );
+	            Queue::push(function($job) use($data) {
+		            Mail::send(
+			            Config::get('larauth::views.mail_registration'),
+			            $data,
+			            function ($message) use ($data) {
+				            $message
+					            ->to($data['email'])
+					            ->subject(trans('larauth::larauth.registration_success'));
+			            }
+		            );
+		            $job->delete();
+	            });
 
                 return Redirect::route('larauth.activation')
                     ->with('activated', TRUE);
@@ -288,13 +298,20 @@ class LarauthController extends \BaseController
             Input::all()
         );
 
-        Mail::send(
-            Config::get('larauth::views.mail_activation'),
-            $data,
-            function ($message) use ($data) {
-                $message->to($data['email']);
-            }
-        );
+	    Queue::push(function($job) use($data)
+	    {
+		    Mail::send(
+			    Config::get('larauth::views.mail_activation'),
+			    $data,
+			    function ($message) use ($data) {
+				    $message
+					    ->to($data['email'])
+					    ->subject(trans('larauth::larauth.request_code'));
+
+			    }
+		    );
+		    $job->delete();
+	    });
 
         return Redirect::route('larauth.activation');
     }
@@ -339,15 +356,18 @@ class LarauthController extends \BaseController
 
         $data = ['key' => $key, 'email'=>Input::get('email')];
 
-        Mail::send(
-            Config::get('larauth::views.mail_forgotpassword'),
-            $data,
-            function($message) use ($data){
-                $message
-                    ->to($data['email'])
-                    ->subject(trans('larauth::larauth.password_recovery'));
-            }
-        );
+	    Queue::push(function($job) use($data) {
+		    Mail::send(
+			    Config::get('larauth::views.mail_forgotpassword'),
+			    $data,
+			    function ($message) use ($data) {
+				    $message
+					    ->to($data['email'])
+					    ->subject(trans('larauth::larauth.password_recovery'));
+			    }
+		    );
+		    $job->delete();
+	    });
 
         return Redirect::route('larauth.forgot_password')->with('processed', true);
     }

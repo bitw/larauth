@@ -17,10 +17,9 @@
         </p>
 	@else
 		<p>
-			{{-- trans('larauth::larauth.authorization_data') }}:<br/>
-			{{ trans('email') }}: {{ $email }}<br/>
-			{{ trans('password') }}: {{ $password --}}
-			------------------
+			{{ trans('larauth::larauth.authorization_data') }}:<br/>
+			{{ trans('larauth::larauth.email') }}: {{ $email }}<br/>
+			{{ trans('larauth::larauth.password') }}: {{ $password }}
 		</p>
     @endif
 </body>
