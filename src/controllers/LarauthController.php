@@ -138,6 +138,7 @@ class LarauthController extends \BaseController
 	                'code' => $activationCode,
 	                'email' => Input::get('email'),
 	                'password' => $password,
+                    'subject' => trans('larauth::larauth.activation'),
                 ],
                 Input::all()
             );
@@ -145,19 +146,7 @@ class LarauthController extends \BaseController
             //Запоминаем пароль в хеше на сутки
             Cache::put(md5(Input::get('email')), $password, 60*24);
 
-	        Queue::push(function($job) use($data){
-		        Mail::send(
-			        Config::get('larauth::views.mail_activation'),
-			        $data,
-			        function ($message) use ($data) {
-				        $message
-					        ->to($data['email'])
-					        ->subject(trans('larauth::larauth.activation'));
-			        }
-		        );
-
-				$job->delete();
-	        });
+            $this->sendMail(Config::get('larauth::views.mail_activation'), $data);
 
             return Redirect::route('larauth.activation');
 
@@ -171,22 +160,11 @@ class LarauthController extends \BaseController
 
             $data = [
                 'email' => Input::get('email'),
-                'password' => $password
+                'password' => $password,
+                'subject' => trans('larauth::larauth.registration_success'),
             ];
 
-            // Ставим в очередь на отправку письмо с сообщением об успешной регистрации
-	        Queue::push(function($job) use($data) {
-		        Mail::send(
-			        Config::get('larauth::views.mail_registration'),
-			        $data,
-			        function ($message) use ($data) {
-				        $message
-					        ->to($data['email'])
-					        ->subject(trans('larauth::larauth.registration_success'));
-			        }
-		        );
-		        $job->delete();
-	        });
+            $this->sendMail(Config::get('larauth::views.mail_registration'), $data);
         }
 
         if ($valid->errors()->count()) {
@@ -217,22 +195,11 @@ class LarauthController extends \BaseController
 
                 $data = [
                     'email' => $user->email,
-                    'password' => Cache::pull(md5($user->email))
+                    'password' => Cache::pull(md5($user->email)),
+                    'subject' => trans('larauth::larauth.registration_success'),
                 ];
 
-                // Высылаем письмо с сообщением об успешной регистрации
-	            Queue::push(function($job) use($data) {
-		            Mail::send(
-			            Config::get('larauth::views.mail_registration'),
-			            $data,
-			            function ($message) use ($data) {
-				            $message
-					            ->to($data['email'])
-					            ->subject(trans('larauth::larauth.registration_success'));
-			            }
-		            );
-		            $job->delete();
-	            });
+                $this->sendMail(Config::get('larauth::views.mail_registration'), $data);
 
                 return Redirect::route('larauth.activation')
                     ->with('activated', TRUE);
@@ -294,24 +261,15 @@ class LarauthController extends \BaseController
 
 
         $data = array_merge(
-            ['code' => $user->activation_code, 'password' => Session::get('pasword')],
+            [
+                'code' => $user->activation_code,
+                'password' => Session::get('pasword'),
+                'subject' => trans('larauth::larauth.request_code'),
+            ],
             Input::all()
         );
 
-	    Queue::push(function($job) use($data)
-	    {
-		    Mail::send(
-			    Config::get('larauth::views.mail_activation'),
-			    $data,
-			    function ($message) use ($data) {
-				    $message
-					    ->to($data['email'])
-					    ->subject(trans('larauth::larauth.request_code'));
-
-			    }
-		    );
-		    $job->delete();
-	    });
+	    $this->sendMail(Config::get('larauth::views.mail_activation'), $data);
 
         return Redirect::route('larauth.activation');
     }
@@ -344,6 +302,7 @@ class LarauthController extends \BaseController
                 'exists' => \Patchwork\Utf8::ucfirst(trans('larauth::larauth.account_with_email_not_exist')),
             )
         );
+
         if (!$valid->passes()) {
             return Redirect::route('larauth.forgot_password')
                 ->with('errors', $valid->errors())
@@ -354,20 +313,13 @@ class LarauthController extends \BaseController
 
         $key = $user->getResetPasswordCode();
 
-        $data = ['key' => $key, 'email'=>Input::get('email')];
+        $data = [
+            'key' => $key,
+            'email' => Input::get('email'),
+            'subject' => trans('larauth::larauth.password_recovery')
+        ];
 
-	    Queue::push(function($job) use($data) {
-		    Mail::send(
-			    Config::get('larauth::views.mail_forgotpassword'),
-			    $data,
-			    function ($message) use ($data) {
-				    $message
-					    ->to($data['email'])
-					    ->subject(trans('larauth::larauth.password_recovery'));
-			    }
-		    );
-		    $job->delete();
-	    });
+        $this->sendMail(Config::get('larauth::views.mail_forgotpassword'), $data);
 
         return Redirect::route('larauth.forgot_password')->with('processed', true);
     }
@@ -486,5 +438,36 @@ class LarauthController extends \BaseController
         Sentry::logout();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Отправка письма на эл.почту с информацией о действии
+     * @param $view_name
+     * @param $data
+     */
+    protected function sendMail($view_name, $data)
+    {
+
+        $sendMail = function($view_name, $data)
+        {
+            Mail::send(
+                $view_name,
+                $data,
+                function ($message) use ($data) {
+                    $message
+                        ->to($data['email'])
+                        ->subject($data['subject']);
+                }
+            );
+        };
+
+        if(Config::get('larauth::use_queue'))
+        {
+            Queue::push(function($job) use($sendMail, $view_name, $data) {
+                $sendMail($view_name, $data);
+                $job->delete();
+            });
+        }
+        else $sendMail($view_name, $data);
     }
 }

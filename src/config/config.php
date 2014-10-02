@@ -11,6 +11,8 @@ return array(
     'template'  => 'default',
     'out'       => 'content',
 
+    'use_queue' => false,
+
     'views'     => [
         'registration' => 'larauth::larauth/registration',
         'activation' => 'larauth::larauth/activation',

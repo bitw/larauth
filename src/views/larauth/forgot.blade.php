@@ -6,7 +6,7 @@
             <div class="panel-heading">{{ trans('larauth::larauth.password_recovery') }}</div>
             <div class="panel-body">
                 @if(!$processed)
-                    {{ Form::open(['route'=>'larauth.forgot_password', 'role'=>'form', 'class'=>'form-horizontal']) }}
+                    {{ Form::open(['route'=>'larauth.forgot_password', 'method'=>'post', 'role'=>'form', 'class'=>'form-horizontal']) }}
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="email">{{ trans('larauth::larauth.email') }}</label>
                             <div class="col-md-8">
