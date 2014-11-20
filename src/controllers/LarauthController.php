@@ -158,7 +158,7 @@ class LarauthController extends \BaseController
                 'activated' => true
             ));
 
-            $data = [
+	        $data = [
                 'email' => Input::get('email'),
                 'password' => $password,
                 'subject' => trans('larauth::larauth.registration_success'),
@@ -189,17 +189,31 @@ class LarauthController extends \BaseController
 
         if ($code) {
             try {
-                $user = Sentry::findUserByActivationCode($code);
+	            $user = Sentry::findUserByActivationCode($code);
 
                 $user->attemptActivation($code);
+
+	            // добавляем пользователя в группы
+	            foreach(Config::get('larauth::append_groups') as $group)
+	            {
+		            try
+		            {
+			            $oGroup = Sentry::findGroupByName($group);
+		            }
+		            catch(\Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+		            {
+			            Log::alert("Попытка добавдения пользователя :user_email в несуществующую группу :group", ['user_email'=>$user->email, 'group'=>$group]);
+		            }
+
+		            $user->addGroup($oGroup);
+	            }
 
                 $data = [
                     'email' => $user->email,
                     'password' => Cache::pull(md5($user->email)),
                     'subject' => trans('larauth::larauth.registration_success'),
                 ];
-
-                $this->sendMail(Config::get('larauth::views.mail_registration'), $data);
+	            $this->sendMail(Config::get('larauth::views.mail_registration'), $data);
 
                 return Redirect::route('larauth.activation')
                     ->with('activated', TRUE);

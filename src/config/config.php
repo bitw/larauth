@@ -13,6 +13,10 @@ return array(
 
     'use_queue' => false,
 
+	'append_groups' => array(
+		'users'
+	),
+
     'views'     => [
         'registration' => 'larauth::larauth/registration',
         'activation' => 'larauth::larauth/activation',
